@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ task.title }} {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        
+        <!-- Кнопка повернення -->
+        <a href="{% url 'tasks:task_list' %}" class="btn btn-outline-secondary mb-3">&larr; Назад до списку</a>
+
+        <!-- Картка завдання -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="card-title mb-0">{{ task.title }}</h2>
+                    <div>
+                        <!-- Бейджі статусу та пріоритету -->
+                        <span class="badge bg-secondary">{{ task.get_status_display }}</span>
+                        <span class="badge bg-info text-dark">Пріоритет: {{ task.get_prior_display }}</span>
+                    </div>
+                </div>
+
+                <p class="text-muted">
+                    Створив: <strong>{{ task.author.username }}</strong> | 
+                    Дата створення: {{ task.created_at|date:"d.m.Y H:i" }}
+                    {% if task.deadline %}
+                    | <span class="text-danger">Дедлайн: {{ task.deadline|date:"d.m.Y H:i" }}</span>
+                    {% endif %}
+                </p>
+
+                <hr>
+
+                <!-- Опис -->
+                <h5>Опис:</h5>
+                <p class="card-text">
+                    {{ task.description|default:"Опис відсутній."|linebreaks }}
+                </p>
+
+                <!-- Виконавці -->
+                <h6 class="mt-4">Виконавці:</h6>
+                {% if task.workers.all %}
+                    <ul>
+                        {% for worker in task.workers.all %}
+                            <li>{{ worker.username }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Немає призначених виконавців.</p>
+                {% endif %}
+
+                <!-- Прикріплений файл завдання -->
+                {% if task.attachment %}
+                    <div class="mt-3">
+                        <a href="{{ task.attachment.url }}" class="btn btn-sm btn-primary" download>
+                            📎 Завантажити вкладення до завдання
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Секція коментарів -->
+        <div class="card shadow-sm mb-5">
+            <div class="card-body">
+                <h4>Коментарі ({{ comments.count }})</h4>
+                <hr>
+
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="border-bottom mb-3 pb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ comment.author.username }}</strong>
+                                <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <p class="mt-2 mb-1">{{ comment.comment|linebreaks }}</p>
+                            
+                            {% if comment.attachment %}
+                                <a href="{{ comment.attachment.url }}" class="btn btn-sm btn-outline-secondary mt-1" download>
+                                    📎 Файл до коментаря
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Ще немає жодного коментаря до цього завдання.</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
