@@ -28,7 +28,7 @@ class Task(models.Model):
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='tasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    complated_at = models.DateTimeField(blank=True, null=True)
+    completed_at = models.DateTimeField(blank=True, null=True)
 
     attachment = models.FileField(upload_to='attach', null=True, blank=True)
 
@@ -45,6 +45,3 @@ class Coment(models.Model):
 
     def __str__(self):
         return self.author
-
-
-    
