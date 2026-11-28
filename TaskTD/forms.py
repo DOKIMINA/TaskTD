@@ -45,3 +45,23 @@ class TaskForm(forms.ModelForm):
                 "class": "form-control",
             }),
         }
+
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm border-0 bg-light p-2 rounded-2'
+            })
+
+
+class CustomUserCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm border-0 bg-light p-2 rounded-2'
+            })
